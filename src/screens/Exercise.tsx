@@ -1,4 +1,4 @@
-import { Icon, VStack,  Heading, HStack, Text } from '@gluestack-ui/themed'
+import { Icon, VStack,  Heading, HStack, Text, Image } from '@gluestack-ui/themed'
 import { useNavigation } from '@react-navigation/native'
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
 import { ArrowLeft } from 'lucide-react-native'
@@ -43,6 +43,21 @@ export function Exercise() {
           </HStack>
         </HStack>
       </VStack>
+
+      <VStack p="$8">
+        <Image
+          source={{
+            uri: 'https://static.wixstatic.com/media/2edbed_60c206e178ad4eb3801f4f47fc6523df~mv2.webp/v1/fill/w_350,h_375,al_c/2edbed_60c206e178ad4eb3801f4f47fc6523df~mv2.webp',
+          }}
+          alt="Exercício"
+          mb="$3"
+          resizeMode="cover"
+          rounded="$lg"
+          w="$full"
+          h="$80"
+        />
+      </VStack>
+      
     </VStack>
   )
 }
