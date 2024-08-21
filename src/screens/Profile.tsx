@@ -9,7 +9,7 @@ import { Button } from '@components/Button'
 export function Profile() {
   return (
     <VStack flex={1}>
-      <ScreenHeader title="Perfil"/>
+      <ScreenHeader title="Bards"/>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
