@@ -5,8 +5,15 @@ import { ScreenHeader } from '@components/ScreenHeader'
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
+import * as ImagePicker from "expo-image-picker"
+
 
 export function Profile() {
+
+  async function handleUserPhotoSelect() {
+    await ImagePicker.launchImageLibraryAsync()
+  }
+
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil"/>
@@ -19,7 +26,7 @@ export function Profile() {
             alt="Imagem do usuário"
           />
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleUserPhotoSelect}>
             <Text
               color="$green500"
               fontFamily="$heading"
