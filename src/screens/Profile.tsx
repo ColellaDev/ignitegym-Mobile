@@ -1,46 +1,54 @@
-import { useState } from 'react'
-import { UserPhoto } from '@components/UserPhoto'
-import { Center, VStack, Text, Heading } from '@gluestack-ui/themed'
-import { ScrollView, TouchableOpacity } from 'react-native'
-import { ScreenHeader } from '@components/ScreenHeader'
-import { Input } from '@components/Input'
 import { Button } from '@components/Button'
-
-import * as ImagePicker from "expo-image-picker"
+import { Input } from '@components/Input'
+import { ScreenHeader } from '@components/ScreenHeader'
+import { UserPhoto } from '@components/UserPhoto'
+import { Center, Heading, Text, VStack } from '@gluestack-ui/themed'
 import * as FileSystem from 'expo-file-system'
-
+import * as ImagePicker from 'expo-image-picker'
+import { useState } from 'react'
+import { Alert, ScrollView, TouchableOpacity } from 'react-native'
 
 export function Profile() {
   const [userPhoto, setUserPhoto] = useState(
-    'https://github.com/colelladev.png',
+    'https://github.com/arthurrios.png',
   )
 
   async function handleUserPhotoSelect() {
-    const photoSelected = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-      aspect: [4, 4],
-      allowsEditing: true,
-    })
+    try {
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      })
 
-    if (photoSelected.canceled) {
-      return
-    }
-
-    const photoUri = photoSelected.assets[0].uri
-
-    if (photoUri) {
-      const photoInfo = (await FileSystem.getInfoAsync(photoUri)) as {
-        size: number
+      if (photoSelected.canceled) {
+        return
       }
 
-      setUserPhoto(photoSelected.assets[0].uri)
+      const photoUri = photoSelected.assets[0].uri
+
+      if (photoUri) {
+        const photoInfo = (await FileSystem.getInfoAsync(photoUri)) as {
+          size: number
+        }
+
+        if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+          return Alert.alert(
+            'Essa imagem é muito grande. Escolha uma de até 5MB',
+          )
+        }
+
+        setUserPhoto(photoSelected.assets[0].uri)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
   return (
     <VStack flex={1}>
-      <ScreenHeader title="Perfil"/>
+      <ScreenHeader title="Perfil" />
 
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
@@ -64,7 +72,7 @@ export function Profile() {
 
           <Center w="$full" gap="$4">
             <Input placeholder="Nome" bg="$gray600" />
-            <Input value="marcos@email.com" bg="$gray600" isReadOnly />
+            <Input value="arthur@email.com" bg="$gray600" isReadOnly />
           </Center>
 
           <Heading
@@ -89,10 +97,8 @@ export function Profile() {
 
             <Button title="Atualizar" />
           </Center>
-
         </Center>
       </ScrollView>
     </VStack>
-    
   )
 }
