@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { UserPhoto } from '@components/UserPhoto'
 import { Center, VStack, Text, Heading } from '@gluestack-ui/themed'
 import { ScrollView, TouchableOpacity } from 'react-native'
@@ -9,6 +10,9 @@ import * as ImagePicker from "expo-image-picker"
 
 
 export function Profile() {
+  const [userPhoto, setUserPhoto] = useState(
+    'https://github.com/colelladev.png',
+  )
 
   async function handleUserPhotoSelect() {
     const photoSelected = await ImagePicker.launchImageLibraryAsync({
@@ -22,7 +26,7 @@ export function Profile() {
       return
     }
 
-    console.log(photoSelected.assets[0])
+    setUserPhoto(photoSelected.assets[0].uri)
   }
 
   return (
@@ -32,7 +36,7 @@ export function Profile() {
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
           <UserPhoto
-            source={{ uri: 'https://github.com/colelladev.png' }}
+            source={{ uri: userPhoto }}
             size="xl"
             alt="Imagem do usuário"
           />
