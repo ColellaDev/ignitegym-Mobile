@@ -20,14 +20,14 @@ export function SignUp() {
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
 
   function handleGoBack(){
     navigation.goBack()
   }
 
-  function handleSignUp() {
-
+  function handleSignUp(data: any) {
+    console.log({ data })
   }
 
   return (
@@ -105,15 +105,17 @@ export function SignUp() {
                 secureTextEntry
                 onChangeText={onChange}
                 value={value}
+                onSubmitEditing={handleSubmit(handleSignUp)}
+                returnKeyType="send"
               />
             )}
           />
 
             <Button
              title="Criar e acessar"
-             onPress={handleSignUp}
+             onPress={handleSubmit(handleSignUp)}
               />
-              
+
           </Center>
 
           <Button title="Voltar para o login" variant="outline" mt="$12" onPress={handleGoBack}/>
