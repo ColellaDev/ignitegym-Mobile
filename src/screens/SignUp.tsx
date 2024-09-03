@@ -75,6 +75,7 @@ export function SignUp() {
                 placeholder="Nome"
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.name?.message}
               />
             )}
           />
@@ -96,11 +97,10 @@ export function SignUp() {
                 autoCapitalize="none"
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.email?.message}
               />
             )}
           />
-
-        <Text color="$white">{errors.email?.message}</Text>
 
           <Controller 
             control={control}
