@@ -10,6 +10,8 @@ import {
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
 import { useForm, Controller } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import BackgroundImg from '@assets/background.png'
 import Logo from '@assets/logo.svg'
@@ -23,11 +25,20 @@ type FormDataProps = {
   password_confirm: string;
 }
 
+const signUpSchema = yup.object({
+  name: yup.string().required('Informe o nome'),
+  email: yup.string().required('Informe o e-mail').email('E-mail inválido'),
+  password: yup.string().required('Informe a senha'),
+  password_confirm: yup.string().required('Confirme a senha'),
+});
+
 export function SignUp() {
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
-  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>();
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchema),
+  });
 
   function handleGoBack(){
     navigation.goBack()
@@ -67,9 +78,6 @@ export function SignUp() {
             <Controller 
             control={control}
             name="name"
-            rules={{
-              required: 'Informe o nome.'
-            }}
             render={({ field: { onChange, value } }) => (
               <Input 
                 placeholder="Nome"
@@ -83,13 +91,6 @@ export function SignUp() {
           <Controller 
             control={control}
             name="email"
-            rules={{
-              required: 'Informe o email.',
-              pattern: {
-                value:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'E-mail inválido'
-              }
-            }}
             render={({ field: { onChange, value } }) => (
               <Input 
                 placeholder="E-mail" 
