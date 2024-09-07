@@ -5,9 +5,11 @@ import {
   ScrollView,
   Text,
   VStack,
+  Toast,
+  ToastTitle,
+  useToast
 } from '@gluestack-ui/themed'
 
-import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
 import { useForm, Controller } from 'react-hook-form';
@@ -16,6 +18,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import axios from 'axios';
 import { api } from "@services/api";
+
+import { AppError } from '@utils/AppError';
 
 import BackgroundImg from '@assets/background.png'
 import Logo from '@assets/logo.svg'
@@ -38,6 +42,8 @@ const signUpSchema = yup.object({
 
 export function SignUp() {
 
+ const toast = useToast();
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
@@ -53,9 +59,18 @@ export function SignUp() {
       const response = await api.post('/users', { name, email, password });
       console.log(response.data);
     } catch (error) {
-      if(axios.isAxiosError(error)) {
-        Alert.alert(error.response?.data.message);
-      }
+      const isAppError = error instanceof AppError;
+
+      const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde';
+
+      toast.show({
+        placement: "top",
+        render: () => (
+          <Toast backgroundColor='$red500' action="error" variant="outline">
+            <ToastTitle  color="$white">{title}</ToastTitle>
+          </Toast>
+        ),
+      });
     }
   }
 
