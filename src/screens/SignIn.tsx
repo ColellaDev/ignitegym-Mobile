@@ -1,12 +1,14 @@
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigation } from "@react-navigation/native";
-import { VStack, Image, Text, Center, Heading, ScrollView } from '@gluestack-ui/themed';
+import { VStack, Image, Text, Center, Heading, ScrollView, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
 
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
 import { useAuth } from '@hooks/useAuth';
 
 import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
+
+import { AppError } from '@utils/AppError';
 
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
@@ -20,6 +22,8 @@ export function SignIn() {
 
   const { singIn } = useAuth();
 
+  const toast = useToast();
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
@@ -28,8 +32,23 @@ export function SignIn() {
     navigation.navigate('signUp');
   }
 
-  async function handleSignIn({ email, password }: FormData){
-    await singIn(email, password);
+  async function handleSignIn({ email, password }: FormData) {
+    try {
+      await singIn(email, password);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+
+      const title =  isAppError ? error.message : 'Não foi possível entrar. Tente novamente mais tarde.'
+
+      toast.show({
+        placement: "top",
+        render: () => (
+          <Toast backgroundColor='$red500' action="error" variant="outline">
+            <ToastTitle  color="$white">{title}</ToastTitle>
+          </Toast>
+        ),
+      });
+    }
   }
 
   return (
