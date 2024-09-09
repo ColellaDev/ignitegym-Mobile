@@ -14,9 +14,6 @@ export function Home() {
     'Remada curvada',
     'Remada unilateral',
     'Levantamento terra',
-    'Levantamento terra',
-    'Levantamento terra',
-    'Levantamento terra',
   ])
   const [groups, setGroups] = useState(['Costas', 'Bíceps', 'Tríceps', 'Ombro'])
   const [groupSelected, setGroupSelected] = useState('costas')
