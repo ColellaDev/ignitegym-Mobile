@@ -15,12 +15,10 @@ export function Routes() {
 
   const { user } = useAuth();
 
-  console.log("USUÁRIO LOGADO =>", user);
-
   return (
     <Box flex={1} bg="$gray700">
       <NavigationContainer theme={theme}>
-        <AuthRoutes />
+         {user.id ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </Box>
   )
