@@ -19,6 +19,7 @@ type AuthContextProviderProps = {
 export const AuthContext = createContext<AuthContextDataProps>({} as AuthContextDataProps);
 
 export function AuthContextProvider({ children }: AuthContextProviderProps)  {
+
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true); 
 
@@ -26,7 +27,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps)  {
     try {
       const { data } = await api.post('/sessions', { email, password });
 
-      if(data.user) {
+      if(data.user && data.token) {
         setUser(data.user);
         storageUserSave(data.user)
       }
