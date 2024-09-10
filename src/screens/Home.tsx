@@ -11,8 +11,11 @@ import { ExerciseDTO } from '@dtos/ExerciseDTO';
 import { HomeHeader } from '@components/HomeHeader'
 import { Group } from '@components/Group'
 import { ExerciseCard } from '@components/ExerciseCard'
+import { Loading } from '@components/Loading';
 
 export function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+
   const [groups, setGroups] = useState<string[]>([]);
   const [exercises, setExercises] = useState<ExerciseDTO[]>([]);
   const [groupSelected, setGroupSelected] = useState('Costas');
@@ -45,6 +48,7 @@ export function Home() {
 
   async function fecthExercisesByGroup() {
     try {
+      setIsLoading(true);
       const response = await api.get(`/exercises/bygroup/${groupSelected}`);
       setExercises(response.data);
 
@@ -59,6 +63,8 @@ export function Home() {
           </Toast>
         ),
       });
+    }  finally {
+      setIsLoading(false);
     }
   }
 
@@ -92,6 +98,8 @@ export function Home() {
         style={{ marginVertical: 40, maxHeight: 44, minHeight: 44 }}
         />
 
+      {
+        isLoading ? <Loading/> :
       <VStack px="$8"  flex={1}>
         <HStack justifyContent="space-between" mb="$5" alignItems="center">
           <Heading color="$gray200" fontSize="$md">
@@ -110,7 +118,10 @@ export function Home() {
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       </VStack>
-
+      }
+      
     </VStack>
+
+     
   )
 }
