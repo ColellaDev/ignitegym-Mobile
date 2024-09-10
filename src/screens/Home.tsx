@@ -1,7 +1,7 @@
 import { HStack, VStack, Heading, Text, useToast, Toast, ToastTitle} from '@gluestack-ui/themed'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { FlatList } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect  } from '@react-navigation/native'
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
 
 import { api } from '@services/api';
@@ -12,14 +12,9 @@ import { Group } from '@components/Group'
 import { ExerciseCard } from '@components/ExerciseCard'
 
 export function Home() {
-  const [exercises, setExercises] = useState([
-    'Puxada frontal',
-    'Remada curvada',
-    'Remada unilateral',
-    'Levantamento terra',
-  ])
   const [groups, setGroups] = useState<string[]>([]);
-  const [groupSelected, setGroupSelected] = useState('costas')
+  const [exercises, setExercises] = useState([]);
+  const [groupSelected, setGroupSelected] = useState('Costas');
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const toast = useToast()
@@ -47,9 +42,34 @@ export function Home() {
     }
   }
 
+  async function fecthExercisesByGroup() {
+    try {
+      const response = await api.get(`/exercises/bygroup/${groupSelected}`);
+      console.log(response.data);
+
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Não foi possível carregar os exercícios por grupo';
+      toast.show({
+        placement: "top",
+        render: () => (
+          <Toast backgroundColor='$red500' action="error" variant="outline">
+            <ToastTitle  color="$white">{title}</ToastTitle>
+          </Toast>
+        ),
+      });
+    }
+  }
+
   useEffect(() => {
     fetchGroups();
   },[])
+
+  useFocusEffect(
+    useCallback(() => {
+      fecthExercisesByGroup()
+    },[groupSelected])
+  )
 
   return (
     <VStack flex={1}>
