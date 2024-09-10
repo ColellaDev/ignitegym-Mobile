@@ -14,12 +14,14 @@ import SeriesSvg from '@assets/series.svg'
 import RepetitionsSvg from '@assets/repetitions.svg'
 
 import { Button } from '@components/Button'
+import { Loading } from '@components/Loading';
 
 type RouteParamsProps = {
   exerciseId: string;
 }
 
 export function Exercise() {
+  const [isLoading, setIsLoading] = useState(true);
   const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO);
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
@@ -35,6 +37,7 @@ export function Exercise() {
 
   async function fetchExerciseDetails() {
     try {
+      setIsLoading(true);
       const response = await api.get(`/exercises/${exerciseId}`);
 
       setExercise(response.data);
@@ -51,6 +54,8 @@ export function Exercise() {
           </Toast>
         ),
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -93,6 +98,8 @@ export function Exercise() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 32 }}
       >
+
+      {isLoading ? <Loading /> : 
         <VStack p="$8">
         
         <Box rounded="$lg" mb="$3" overflow="hidden">
@@ -105,7 +112,7 @@ export function Exercise() {
             w="$full"
             h="$80"
           />
-          </Box>
+        </Box>
         
 
           <Box bg="$gray600" rounded="$md" pb="$4" px="$4">
@@ -133,6 +140,7 @@ export function Exercise() {
             <Button title="Marcar como realizado" />
           </Box>
         </VStack>
+}
       </ScrollView>
 
     </VStack>
