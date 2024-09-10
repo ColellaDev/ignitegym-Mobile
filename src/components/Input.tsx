@@ -10,6 +10,7 @@ type Props = ComponentProps<typeof InputField> & {
   errorMessage?: string | null
   isInvalid?: boolean
   isReadOnly?: boolean
+  isDisabled?: boolean
 }
 
 export function Input({
