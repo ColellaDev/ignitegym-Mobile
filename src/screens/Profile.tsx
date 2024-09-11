@@ -18,6 +18,8 @@ import { useAuth } from '@hooks/useAuth';
 import { api } from '@services/api';
 import { AppError } from '@utils/AppError';
 
+import defaulUserPhotoImg from '@assets/userPhotoDefault.png'; 
+
 type FormDataProps = {
   name: string;
   email?: string;
@@ -53,7 +55,6 @@ const profileSchema = yup.object({
 
 export function Profile() {
   const [isUpdating, setIsUpdating] = useState(false);
-  const [userPhoto, setUserPhoto] = useState( 'https://github.com/arthurrios.png' )
 
   const toast = useToast();
   const { user, updateUserProfile } = useAuth();
@@ -111,11 +112,17 @@ export function Profile() {
 
         userPhotoUploadForm.append('avatar', photoFile);
 
-        await api.patch('/users/avatar', userPhotoUploadForm, {
+        const avatarUpdtedResponse = await api.patch('/users/avatar', userPhotoUploadForm, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
+
+        const userUpdated = user;
+
+        userUpdated.avatar = avatarUpdtedResponse.data.avatar;
+
+        await updateUserProfile(userUpdated);
 
         toast.show({
           placement: "top",
@@ -174,7 +181,11 @@ export function Profile() {
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
           <UserPhoto
-            source={{ uri: userPhoto }}
+             source={
+              user.avatar  
+              ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` } 
+              : defaulUserPhotoImg
+            }
             size="xl"
             alt="Imagem do usuário"
           />
